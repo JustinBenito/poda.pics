@@ -14,7 +14,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    fetch('https://api.github.com/repos/JustinBenito/podu.pics')
+    fetch('https://api.github.com/repos/FOSSUChennai/podu.pics')
       .then(res => res.json())
       .then(data => setStarCount(data.stargazers_count))
       .catch(err => console.error('Failed to fetch star count:', err));
@@ -114,7 +114,7 @@ export default function Home() {
 
       {/* Contribute Button */}
       <a
-        href="https://github.com/JustinBenito/podu.pics"
+        href="https://github.com/FOSSUChennai/podu.pics"
         target="_blank"
         rel="noopener noreferrer"
         className="absolute top-6 right-6 z-10 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl border-[1px] border-white/30 rounded-full text-white font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2"
