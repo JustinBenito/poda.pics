@@ -174,174 +174,180 @@ export default function Home() {
         )}
       </a>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 p-8 pointer-events-none">
-        <h1 className="font-[family-name:var(--font-instrument-serif)] text-8xl md:text-[256px] text-white">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-12 p-8 pointer-events-none">
+        <h1 className="font-[family-name:var(--font-instrument-serif)] text-8xl md:text-[256px] text-white mb-4">
           Podu.pics
         </h1>
 
-        <div className="w-[90%] max-w-2xl bg-white/10 backdrop-blur-xl rounded-[32px] shadow-2xl p-4 border border-white/20 pointer-events-auto">
-
-          {uploadedUrl ? (
-            <div className="flex flex-col items-center gap-6 min-h-[200px] md:min-h-[300px] justify-center ">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full">
-                <Check size={32} weight="bold" className="text-green-400" />
-              </div>
-
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-white mb-2">Upload Successful!</h2>
-                <p className="text-white/70 text-sm">Your image is ready to share</p>
-              </div>
-
-              <div className="w-full max-w-md bg-black/30 rounded-xl p-2 md:p-4 flex items-center gap-2">
-                <input
-                  type="text"
-                  value={uploadedUrl}
-                  readOnly
-                  className="flex-1 bg-transparent text-white text-sm outline-none truncate"
-                />
-                <button
-                  onClick={copyToClipboard}
-                  className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 shrink-0"
-                >
-                  {copied ? (
-                    <>
-                      <Check size={20} className="text-green-400" />
-                      <span className="hidden md:inline text-green-400 text-sm font-medium">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={20} className="text-white" />
-                      <span className="hidden md:inline text-white text-sm font-medium">Copy</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <button
-                onClick={resetUpload}
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-all duration-200"
-              >
-                Upload Another
-              </button>
-            </div>
-          ) : (
-            <form
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-              className="relative"
-            >
-              <input
-                type="file"
-                id="file-upload"
-                className="hidden"
-                onChange={handleChange}
-                accept="image/*"
-                disabled={uploading}
-              />
-
-              <label
-                htmlFor="file-upload"
-                className={`
-                  flex flex-col items-center justify-center
-                  min-h-[200px] md:min-h-[300px] md:p-12
-                  border-4 border-dashed rounded-2xl
-                  transition-all duration-200
-                  ${uploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
-                  ${dragActive
-                    ? 'border-green-400 bg-green-500/10'
-                    : 'border-white/30 hover:border-white/50 hover:bg-white/5'
-                  }
-                `}
-              >
-                <div className="flex flex-col items-center gap-4">
-                  {uploading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white"></div>
-                      <p className="text-xl font-medium text-white">Uploading...</p>
-                    </>
-                  ) : (
-                    <>
-                      <IconImage
-                        size={48}
-                        weight="light"
-                        className={dragActive ? 'text-green-400' : 'text-white/60'}
-                      />
-                      <div className="text-center">
-                        <p className="text-xl font-medium text-white mb-2">
-                          {dragActive ? 'Drop your image here' : 'turn your imgs into links'}
-                        </p>
-                        <p className="text-sm text-white/70">
-                          PNG, JPG, GIF up to 10MB
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </label>
-            </form>
-          )}
-        </div>
-
-        {/* Recent Uploads Section */}
-        {history.length > 0 && !uploadedUrl && !uploading && (
-          <div className="w-[90%] max-w-2xl bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 pointer-events-auto transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <div className="flex items-center gap-2 text-white/80">
-                <Clock size={20} />
-                <h3 className="font-medium">Recent Uploads</h3>
-              </div>
-              <button
-                onClick={clearHistory}
-                className="text-xs text-white/40 hover:text-red-400 flex items-center gap-1 transition-colors group"
-              >
-                <Trash size={14} className="group-hover:shake" />
-                Clear All
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 gap-2">
-              {history.map((item) => (
-                <div
-                  key={item.id}
-                  className="group flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all duration-200"
-                >
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0">
-                      <IconImage size={24} weight="light" className="text-white/40" />
-                    </div>
-                    <div className="truncate">
-                      <p className="text-white text-sm font-medium truncate">{item.url}</p>
-                      <p className="text-white/40 text-[10px]">
-                        {new Date(item.timestamp).toLocaleDateString()}
-                      </p>
-                    </div>
+        <div className={`w-full max-w-7xl grid grid-cols-1 ${history.length > 0 && !uploadedUrl && !uploading ? 'lg:grid-cols-2' : ''} gap-8 items-start justify-center`}>
+          {/* Upload Section */}
+          <div className="flex justify-center lg:justify-center">
+            <div className="w-full max-w-2xl bg-white/10 backdrop-blur-xl rounded-[32px] shadow-2xl p-4 border border-white/20 pointer-events-auto">
+              {uploadedUrl ? (
+                <div className="flex flex-col items-center gap-6 min-h-[200px] md:min-h-[300px] justify-center">
+                  <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full">
+                    <Check size={32} weight="bold" className="text-green-400" />
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="text-center">
+                    <h2 className="text-2xl font-bold text-white mb-2">Upload Successful!</h2>
+                    <p className="text-white/70 text-sm">Your image is ready to share</p>
+                  </div>
+
+                  <div className="w-full max-w-md bg-black/30 rounded-xl p-2 md:p-4 flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={uploadedUrl}
+                      readOnly
+                      className="flex-1 bg-transparent text-white text-sm outline-none truncate"
+                    />
                     <button
-                      onClick={() => copyHistoryLink(item.url)}
-                      className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
-                      title="Copy Link"
+                      onClick={copyToClipboard}
+                      className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 shrink-0"
                     >
-                      <Copy size={18} />
+                      {copied ? (
+                        <>
+                          <Check size={20} className="text-green-400" />
+                          <span className="hidden md:inline text-green-400 text-sm font-medium">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={20} className="text-white" />
+                          <span className="hidden md:inline text-white text-sm font-medium">Copy</span>
+                        </>
+                      )}
                     </button>
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
-                      title="View Image"
-                    >
-                      <ArrowRight size={18} />
-                    </a>
                   </div>
+
+                  <button
+                    onClick={resetUpload}
+                    className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-all duration-200"
+                  >
+                    Upload Another
+                  </button>
                 </div>
-              ))}
+              ) : (
+                <form
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                  className="relative"
+                >
+                  <input
+                    type="file"
+                    id="file-upload"
+                    className="hidden"
+                    onChange={handleChange}
+                    accept="image/*"
+                    disabled={uploading}
+                  />
+
+                  <label
+                    htmlFor="file-upload"
+                    className={`
+                      flex flex-col items-center justify-center
+                      min-h-[200px] md:min-h-[300px] md:p-12
+                      border-4 border-dashed rounded-2xl
+                      transition-all duration-200
+                      ${uploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+                      ${dragActive
+                        ? 'border-green-400 bg-green-500/10'
+                        : 'border-white/30 hover:border-white/50 hover:bg-white/5'
+                      }
+                    `}
+                  >
+                    <div className="flex flex-col items-center gap-4">
+                      {uploading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white"></div>
+                          <p className="text-xl font-medium text-white">Uploading...</p>
+                        </>
+                      ) : (
+                        <>
+                          <IconImage
+                            size={48}
+                            weight="light"
+                            className={dragActive ? 'text-green-400' : 'text-white/60'}
+                          />
+                          <div className="text-center">
+                            <p className="text-xl font-medium text-white mb-2">
+                              {dragActive ? 'Drop your image here' : 'turn your imgs into links'}
+                            </p>
+                            <p className="text-sm text-white/70">
+                              PNG, JPG, GIF up to 10MB
+                            </p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </label>
+                </form>
+              )}
             </div>
           </div>
-        )}
+
+          {/* Recent Uploads Section */}
+          {history.length > 0 && !uploadedUrl && !uploading && (
+            <div className="flex justify-center">
+              <div className="w-full max-w-2xl bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 pointer-events-auto transition-all animate-in fade-in slide-in-from-right-4 lg:slide-in-from-right-8 duration-500">
+                <div className="flex items-center justify-between mb-4 px-2">
+                  <div className="flex items-center gap-2 text-white/80">
+                    <Clock size={20} />
+                    <h3 className="font-medium">Recent Uploads</h3>
+                  </div>
+                  <button
+                    onClick={clearHistory}
+                    className="text-xs text-white/40 hover:text-red-400 flex items-center gap-1 transition-colors group"
+                  >
+                    <Trash size={14} className="group-hover:shake" />
+                    Clear All
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-2">
+                  {history.map((item) => (
+                    <div
+                      key={item.id}
+                      className="group flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0">
+                          <IconImage size={24} weight="light" className="text-white/40" />
+                        </div>
+                        <div className="truncate">
+                          <p className="text-white text-sm font-medium truncate">{item.url}</p>
+                          <p className="text-white/40 text-[10px]">
+                            {new Date(item.timestamp).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => copyHistoryLink(item.url)}
+                          className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
+                          title="Copy Link"
+                        >
+                          <Copy size={18} />
+                        </button>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
+                          title="View Image"
+                        >
+                          <ArrowRight size={18} />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Footer */}
