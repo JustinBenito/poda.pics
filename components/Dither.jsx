@@ -171,7 +171,6 @@ function DitheredWaves({
   waveColor,
   colorNum,
   pixelSize,
-  disableAnimation,
   enableMouseInteraction,
   mouseRadius
 }) {
@@ -204,10 +203,7 @@ function DitheredWaves({
   const prevColor = useRef([...waveColor]);
   useFrame(({ clock }) => {
     const u = waveUniformsRef.current;
-
-    if (!disableAnimation) {
-      u.time.value = clock.getElapsedTime();
-    }
+    u.time.value = clock.getElapsedTime();
 
     if (u.waveSpeed.value !== waveSpeed) u.waveSpeed.value = waveSpeed;
     if (u.waveFrequency.value !== waveFrequency) u.waveFrequency.value = waveFrequency;
@@ -230,7 +226,7 @@ function DitheredWaves({
     if (!enableMouseInteraction) return;
     const rect = gl.domElement.getBoundingClientRect();
     const dpr = gl.getPixelRatio();
-    mouseRef.current.set((e.clientX - rect.left) * dpr, (e.clientY - rect.top) * dpr);
+    mouseRef.current.set((e.clientX - rect.left) * dpr, (rect.height - (e.clientY - rect.top)) * dpr);
   };
 
   return (
@@ -240,6 +236,7 @@ function DitheredWaves({
         <shaderMaterial
           vertexShader={waveVertexShader}
           fragmentShader={waveFragmentShader}
+          // eslint-disable-next-line react-hooks/refs
           uniforms={waveUniformsRef.current}
         />
       </mesh>

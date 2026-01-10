@@ -1,11 +1,17 @@
 'use client';
 
 import Dither from "@/components/Dither";
-import { Image, Star, Check, Copy } from "@phosphor-icons/react";
+import { Image as IconImage, Star, Check, Copy, Clock, Trash, ArrowRight } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import Link from "next/link";
 import Script from "next/script";
+
+interface HistoryItem {
+  id: string;
+  url: string;
+  timestamp: number;
+}
 
 export default function Home() {
   const [dragActive, setDragActive] = useState(false);
@@ -13,12 +19,23 @@ export default function Home() {
   const [uploading, setUploading] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
 
   useEffect(() => {
     fetch('https://api.github.com/repos/FOSSUChennai/podu.pics')
       .then(res => res.json())
       .then(data => setStarCount(data.stargazers_count))
       .catch(err => console.error('Failed to fetch star count:', err));
+
+    // Load history from localStorage
+    const savedHistory = localStorage.getItem('podu_history');
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error('Failed to parse history:', e);
+      }
+    }
   }, []);
 
   const handleDrag = (e: React.DragEvent) => {
@@ -62,6 +79,18 @@ export default function Home() {
       }
 
       setUploadedUrl(metadata.url);
+
+      // Update history
+      const newHistoryItem: HistoryItem = {
+        id: metadata.key,
+        url: metadata.url,
+        timestamp: Date.now(),
+      };
+
+      const updatedHistory = [newHistoryItem, ...history.filter(item => item.id !== metadata.key)].slice(0, 10);
+      setHistory(updatedHistory);
+      localStorage.setItem('podu_history', JSON.stringify(updatedHistory));
+
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Upload failed. Please try again.');
     } finally {
@@ -97,6 +126,17 @@ export default function Home() {
   const resetUpload = () => {
     setUploadedUrl(null);
     setCopied(false);
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem('podu_history');
+    toast.success('Upload history cleared');
+  };
+
+  const copyHistoryLink = async (url: string) => {
+    await navigator.clipboard.writeText(url);
+    toast.success('Link copied to clipboard');
   };
 
   return (
@@ -223,7 +263,7 @@ export default function Home() {
                     </>
                   ) : (
                     <>
-                      <Image
+                      <IconImage
                         size={48}
                         weight="light"
                         className={dragActive ? 'text-green-400' : 'text-white/60'}
@@ -243,14 +283,73 @@ export default function Home() {
             </form>
           )}
         </div>
+
+        {/* Recent Uploads Section */}
+        {history.length > 0 && !uploadedUrl && !uploading && (
+          <div className="w-[90%] max-w-2xl bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 pointer-events-auto transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center justify-between mb-4 px-2">
+              <div className="flex items-center gap-2 text-white/80">
+                <Clock size={20} />
+                <h3 className="font-medium">Recent Uploads</h3>
+              </div>
+              <button
+                onClick={clearHistory}
+                className="text-xs text-white/40 hover:text-red-400 flex items-center gap-1 transition-colors group"
+              >
+                <Trash size={14} className="group-hover:shake" />
+                Clear All
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2">
+              {history.map((item) => (
+                <div
+                  key={item.id}
+                  className="group flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0">
+                      <IconImage size={24} weight="light" className="text-white/40" />
+                    </div>
+                    <div className="truncate">
+                      <p className="text-white text-sm font-medium truncate">{item.url}</p>
+                      <p className="text-white/40 text-[10px]">
+                        {new Date(item.timestamp).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => copyHistoryLink(item.url)}
+                      className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
+                      title="Copy Link"
+                    >
+                      <Copy size={18} />
+                    </button>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
+                      title="View Image"
+                    >
+                      <ArrowRight size={18} />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
       <footer className="absolute gap-0 bottom-6 left-0 right-0 text-center">
         <p className="text-white/60 font-bold text-md">
           Developed with love by Justin and Hari
-           <br />
-           <Link href="/foss" className="text-white/60 underline font-light italic text-md hover:text-white/80 transition-colors">Using awesome <span className="font-bold">FOSS</span> tools</Link>
+          <br />
+          <Link href="/foss" className="text-white/60 underline font-light italic text-md hover:text-white/80 transition-colors">Using awesome <span className="font-bold">FOSS</span> tools</Link>
         </p>
       </footer>
 
