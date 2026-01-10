@@ -87,7 +87,7 @@ export default function Home() {
         timestamp: Date.now(),
       };
 
-      const updatedHistory = [newHistoryItem, ...history.filter(item => item.id !== metadata.key)].slice(0, 10);
+      const updatedHistory = [newHistoryItem, ...history.filter(item => item.id !== metadata.key)].slice(0, 50);
       setHistory(updatedHistory);
       localStorage.setItem('podu_history', JSON.stringify(updatedHistory));
 
@@ -139,6 +139,17 @@ export default function Home() {
     toast.success('Link copied to clipboard');
   };
 
+  const loadMockHistory = () => {
+    const mockItems: HistoryItem[] = Array.from({ length: 20 }, (_, i) => ({
+      id: `mock-${i}`,
+      url: `https://podu.pics/mock-image-${20 - i}.jpg`,
+      timestamp: Date.now() - i * 3600000, // staggered by hour
+    }));
+    setHistory(mockItems);
+    localStorage.setItem('podu_history', JSON.stringify(mockItems));
+    toast.success('20 mock uploads loaded');
+  };
+
   return (
     <div className="relative w-full h-screen bg-black">
       <Script
@@ -182,9 +193,9 @@ export default function Home() {
         <div className={`w-full max-w-7xl grid grid-cols-1 ${history.length > 0 && !uploadedUrl && !uploading ? 'lg:grid-cols-2' : ''} gap-8 items-start justify-center`}>
           {/* Upload Section */}
           <div className="flex justify-center lg:justify-center">
-            <div className="w-full max-w-2xl bg-white/10 backdrop-blur-xl rounded-[32px] shadow-2xl p-4 border border-white/20 pointer-events-auto">
+            <div className="w-full max-w-2xl bg-white/10 backdrop-blur-xl rounded-[32px] shadow-2xl p-4 border border-white/20 pointer-events-auto lg:h-[480px] flex flex-col justify-center">
               {uploadedUrl ? (
-                <div className="flex flex-col items-center gap-6 min-h-[200px] md:min-h-[300px] justify-center">
+                <div className="flex flex-col items-center gap-6 justify-center">
                   <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full">
                     <Check size={32} weight="bold" className="text-green-400" />
                   </div>
@@ -232,7 +243,7 @@ export default function Home() {
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
-                  className="relative"
+                  className="relative h-full"
                 >
                   <input
                     type="file"
@@ -247,7 +258,7 @@ export default function Home() {
                     htmlFor="file-upload"
                     className={`
                       flex flex-col items-center justify-center
-                      min-h-[200px] md:min-h-[300px] md:p-12
+                      h-full md:p-12
                       border-4 border-dashed rounded-2xl
                       transition-all duration-200
                       ${uploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
@@ -290,8 +301,8 @@ export default function Home() {
           {/* Recent Uploads Section */}
           {history.length > 0 && !uploadedUrl && !uploading && (
             <div className="flex justify-center">
-              <div className="w-full max-w-2xl bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 pointer-events-auto transition-all animate-in fade-in slide-in-from-right-4 lg:slide-in-from-right-8 duration-500">
-                <div className="flex items-center justify-between mb-4 px-2">
+              <div className="w-full max-w-2xl bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 pointer-events-auto transition-all animate-in fade-in slide-in-from-right-4 lg:slide-in-from-right-8 duration-500 lg:h-[480px] flex flex-col">
+                <div className="flex items-center justify-between mb-6 px-2 shrink-0">
                   <div className="flex items-center gap-2 text-white/80">
                     <Clock size={20} />
                     <h3 className="font-medium">Recent Uploads</h3>
@@ -305,44 +316,46 @@ export default function Home() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2">
-                  {history.map((item) => (
-                    <div
-                      key={item.id}
-                      className="group flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-3 overflow-hidden">
-                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0">
-                          <IconImage size={24} weight="light" className="text-white/40" />
+                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="grid grid-cols-1 gap-2">
+                    {history.map((item) => (
+                      <div
+                        key={item.id}
+                        className="group flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all duration-200"
+                      >
+                        <div className="flex items-center gap-3 overflow-hidden">
+                          <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0">
+                            <IconImage size={24} weight="light" className="text-white/40" />
+                          </div>
+                          <div className="truncate">
+                            <p className="text-white text-sm font-medium truncate">{item.url}</p>
+                            <p className="text-white/40 text-[10px]">
+                              {new Date(item.timestamp).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
-                        <div className="truncate">
-                          <p className="text-white text-sm font-medium truncate">{item.url}</p>
-                          <p className="text-white/40 text-[10px]">
-                            {new Date(item.timestamp).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        <button
-                          onClick={() => copyHistoryLink(item.url)}
-                          className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
-                          title="Copy Link"
-                        >
-                          <Copy size={18} />
-                        </button>
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
-                          title="View Image"
-                        >
-                          <ArrowRight size={18} />
-                        </a>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={() => copyHistoryLink(item.url)}
+                            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
+                            title="Copy Link"
+                          >
+                            <Copy size={18} />
+                          </button>
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/60 hover:text-white transition-all"
+                            title="View Image"
+                          >
+                            <ArrowRight size={18} />
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
