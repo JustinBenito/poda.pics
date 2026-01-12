@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Podu.pics
+
+**Fast, open-source image hosting with a stunning experience.**
+
+Podu.pics is a developer-focused, privacy-first image hosting utility built with Next.js and Cloudflare R2. It turns your images into shareable links instantly, without the bloat of traditional hosting platforms.
+
+![Podu.pics Preview](public/preview.png)
+
+## Features
+
+- **Instant Uploads**: Optimized upload flow using presigned URLs direct to the edge.
+- **Dither Visuals**: A unique, interactive background experience powered by Three.js and custom shaders.
+- **Privacy First**: Anonymous uploads, zero tracking, and no database requirements.
+- **Edge Storage**: Powered by Cloudflare R2 for zero-egress fees and global speed.
+- **Short Links**: Clean, URL-friendly IDs generated via NanoID.
+
+## Architecture
+
+Podu.pics is built for maximum speed and minimum cost:
+- **Client**: Direct-to-Edge uploads via S3 Presigned URLs.
+- **Serverless**: Dynamic image serving through Next.js App Router.
+- **Storage**: Cloudflare R2 (S3-compatible, zero-egress storage).
+
+## Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Visuals**: [Three.js](https://threejs.org/) & [React Three Fiber](https://r3f.docs.pmnd.rs/)
+- **Icons**: [Phosphor Icons](https://phosphoricons.com/)
+- **Storage**: [Cloudflare R2](https://www.cloudflare.com/products/r2/)
+- **ID Generation**: [NanoID](https://github.com/ai/nanoid)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+You will need a Cloudflare Account with an R2 bucket configured.
+
+### Environment Setup
+
+Copy `.env.example` to `.env.local` and fill in your Cloudflare credentials:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+R2_ACCOUNT_ID=your_account_id
+R2_ACCESS_KEY_ID=your_access_key
+R2_SECRET_ACCESS_KEY=your_secret_key
+R2_BUCKET_NAME=your_bucket_name
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Run Locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) to see the result.
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+Contributions are welcome! Please check our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Developed with care by [Justin](https://github.com/JustinSane) and [Hari](https://github.com/Hari-Haran-Dev).

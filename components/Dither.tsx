@@ -1,8 +1,5 @@
-/* eslint-disable react/no-unknown-property */
-'use client';
-
-import { useRef, useState, useEffect, forwardRef } from 'react';
-import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
+import { useRef, useEffect, forwardRef } from 'react';
+import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { EffectComposer, wrapEffect } from '@react-three/postprocessing';
 import { Effect } from 'postprocessing';
 import * as THREE from 'three';
@@ -135,9 +132,9 @@ void mainImage(in vec4 inputColor, in vec2 uv, out vec4 outputColor) {
 `;
 
 class RetroEffectImpl extends Effect {
-  public uniforms: Map<string, THREE.Uniform<any>>;
+  public uniforms: Map<string, THREE.Uniform<number>>;
   constructor() {
-    const uniforms = new Map<string, THREE.Uniform<any>>([
+    const uniforms = new Map<string, THREE.Uniform<number>>([
       ['colorNum', new THREE.Uniform(4.0)],
       ['pixelSize', new THREE.Uniform(2.0)]
     ]);
@@ -158,16 +155,17 @@ class RetroEffectImpl extends Effect {
   }
 }
 
+const WrappedRetroEffect = wrapEffect(RetroEffectImpl);
+
 const RetroEffect = forwardRef<RetroEffectImpl, { colorNum: number; pixelSize: number }>((props, ref) => {
   const { colorNum, pixelSize } = props;
-  const WrappedRetroEffect = wrapEffect(RetroEffectImpl);
   return <WrappedRetroEffect ref={ref} colorNum={colorNum} pixelSize={pixelSize} />;
 });
 
 RetroEffect.displayName = 'RetroEffect';
 
 interface WaveUniforms {
-  [key: string]: THREE.Uniform<any>;
+  [key: string]: THREE.Uniform<number | THREE.Vector2 | THREE.Color>;
   time: THREE.Uniform<number>;
   resolution: THREE.Uniform<THREE.Vector2>;
   waveSpeed: THREE.Uniform<number>;
@@ -198,7 +196,6 @@ function DitheredWaves({
   waveColor,
   colorNum,
   pixelSize,
-  disableAnimation,
   enableMouseInteraction,
   mouseRadius
 }: DitheredWavesProps) {
@@ -229,19 +226,17 @@ function DitheredWaves({
   }, [size, gl]);
 
   const prevColor = useRef([...waveColor]);
+
   useFrame(({ clock }) => {
     const u = waveUniformsRef.current;
-
-    if (!disableAnimation) {
-      u.time.value = clock.getElapsedTime();
-    }
+    u.time.value = clock.getElapsedTime();
 
     if (u.waveSpeed.value !== waveSpeed) u.waveSpeed.value = waveSpeed;
     if (u.waveFrequency.value !== waveFrequency) u.waveFrequency.value = waveFrequency;
     if (u.waveAmplitude.value !== waveAmplitude) u.waveAmplitude.value = waveAmplitude;
 
     if (!prevColor.current.every((v, i) => v === waveColor[i])) {
-      u.waveColor.value.set(...waveColor);
+      (u.waveColor.value as THREE.Color).set(...waveColor);
       prevColor.current = [...waveColor];
     }
 
@@ -249,7 +244,7 @@ function DitheredWaves({
     u.mouseRadius.value = mouseRadius;
 
     if (enableMouseInteraction) {
-      u.mousePos.value.copy(mouseRef.current);
+      (u.mousePos.value as THREE.Vector2).copy(mouseRef.current);
     }
   });
 
@@ -267,6 +262,7 @@ function DitheredWaves({
         <shaderMaterial
           vertexShader={waveVertexShader}
           fragmentShader={waveFragmentShader}
+          // eslint-disable-next-line react-hooks/refs
           uniforms={waveUniformsRef.current}
         />
       </mesh>
