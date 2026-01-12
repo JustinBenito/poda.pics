@@ -42,7 +42,7 @@ export default function FossPage() {
   return (
     <div className="relative w-full min-h-screen bg-black">
       {/* Header with Back and Contribute buttons */}
-      <div className="absolute top-6 left-6 right-6 z-10 flex justify-between items-center">
+      <div className="absolute top-6 left-6 right-6 z-20 flex justify-between items-center">
         <Link
           href="/"
           className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl border-[1px] border-white/30 rounded-full text-white font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2"
