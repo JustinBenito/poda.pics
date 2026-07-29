@@ -4,7 +4,7 @@
 <h1><strong>podu.pics -- An Open-Source ImgBB alternative</strong>  </h1>
 <br/>
 
-[![license](https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square)](https://github.com/FOSSUChennai/podu.pics/blob/main/LICENSE) [![built with next.js](https://img.shields.io/badge/built%20with-next.js-black?style=flat-square)](https://nextjs.org/) [![typescript](https://img.shields.io/badge/typescript-007ACC?style=flat-square)](https://www.typescriptlang.org/) [![stars](https://img.shields.io/badge/stars-28-yellow?style=flat-square)](https://github.com/FOSSUChennai/podu.pics/stargazers)
+[![license](https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square)](https://github.com/FOSSUChennai/podu.pics/blob/main/LICENSE) [![built with next.js](https://img.shields.io/badge/built%20with-next.js-black?style=flat-square)](https://nextjs.org/) [![typescript](https://img.shields.io/badge/typescript-007ACC?style=flat-square)](https://www.typescriptlang.org/) ![Github Stars](https://img.shields.io/github/stars/FOSSUChennai/podu.pics)
 
 </p>
 
@@ -17,7 +17,7 @@ Ever heard of an image host that lets you upload images, generate shareable link
 
 No? That's because this is the first one.
 
-[podu.pics](podu.pics) exists because most "free" image hosts aren't really free. 
+[podu.pics](https://podu.pics) exists because most "free" image hosts aren't really free. 
 
 (Because remember folks, in FOSS, ***FREE AS IN FREEDOM!***)
 
